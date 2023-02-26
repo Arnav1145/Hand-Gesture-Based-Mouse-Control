@@ -4,6 +4,7 @@ import time
 import math
 import numpy as np
 
+a = 3
 
 class handDetector():
     def __init__(self, mode=False, maxHands=2, detectionCon=0.7, trackCon=0.7):
