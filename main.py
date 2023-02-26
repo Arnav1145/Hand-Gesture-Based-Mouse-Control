@@ -29,8 +29,16 @@ detector = htm.handDetector(maxHands=1)
 app = ctk.CTk()
 app.bind('<Escape>', lambda e: app.quit())
 
+# Create a frame for the header row
+header_frame = ctk.CTkFrame(app)
+header_frame.pack(side="top", fill="x")
+
+# Create a label with the header text and pack it into the header frame
+header_label = ctk.CTkLabel(header_frame, text="Hand Gesture Based Mouse Control", font=("TkDefaultFont", 16), height=2)
+header_label.pack(fill = "x", padx=10,pady=10, anchor="center")
+
 #label on which camera will be opened
-label_widget = ctk.CTkLabel(app)
+label_widget = ctk.CTkLabel(app, text = None)
 label_widget.pack()
 
 #function to open or access camera
@@ -84,23 +92,25 @@ def open_camera():
     photo_image = ImageTk.PhotoImage(image=captured_image)
 
     # Displaying photoimage in the label
-    label_widget.photo_image = photo_image
+    # label_widget.photo_image = photo_image
 
     # Configure image in the label
-    label_widget.configure(image=photo_image)
+    # label_widget.configure(image=photo_image)
 
     # Repeat the same process after every 10 seconds
     label_widget.after(10, open_camera)
 
-#created a function for hand gesture based mouse control
-def virtual_mouse():
-    print("Welcome!!!")
 
 
+def stop_camera():
+    cap.release()
 
 #created button when pressed open camera
 button1 = ctk.CTkButton(app, text="Start",command=open_camera)
 button1.pack()
+
+button2 = ctk.CTkButton(app, text="Stop",command=stop_camera)
+button2.pack()
 
 # Set the title of the window
 app.title("Hand Gesture Based Mouse Control")
