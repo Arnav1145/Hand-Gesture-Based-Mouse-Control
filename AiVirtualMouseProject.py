@@ -21,23 +21,22 @@ plocX=0
 plocY=0
 clocX,clocY=0,0
 
-cap=cv2.VideoCapture(1)
+cap=cv2.VideoCapture(0)
 cap.set(3,wCam)
 cap.set(4,hCam)
 detector=htm.handDetector(maxHands=1)
 wScr,hScr =autopy.screen.size()
-print(wScr,hScr)
 
 while True:
     success,img=cap.read()
     new_img=img
     distance = hd.distance(img)
-    print(distance)
     if distance>100:
         img=zs.zoomat(img)
 
     img = detector.findHands(img)
     lmList, bbox = detector.findPosition(img)
+
     if len(lmList) != 0:
         x1, y1 = lmList[8][1:]
         x2, y2 = lmList[12][1:]

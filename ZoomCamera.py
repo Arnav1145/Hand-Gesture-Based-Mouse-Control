@@ -1,8 +1,5 @@
 import cv2
 import mediapipe as mp
-from vidstab import VidStab
-from pyvirtualcam import PixelFormat
-import pyvirtualcam
 import platform
 
 gb_zoom = 0
@@ -12,7 +9,6 @@ hands = mpHands.Hands()
 mpDraw = mp.solutions.drawing_utils
 handNo = 0
 device_val = None
-stabilizer = VidStab()
 
 def zoom_frame(image,same_image,coord):
     zoom_type="transitioin"

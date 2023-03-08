@@ -1,6 +1,6 @@
 import cv2 as cv
 import os
-from cvzone.HandTrackingModule import HandDetector
+from HandTrackingModule import handDetector
 import numpy as np
 
 width, height = 1280,720
@@ -24,7 +24,9 @@ annotationNumber = 0
 annotationStart = False
 
 # HandDetector
-detector = HandDetector(detectionCon=0.8, maxHands=1)
+detector = handDetector(detectionCon=0.8, maxHands=1)
+
+folderPath = "icon"
 
 while True:
     # import images
