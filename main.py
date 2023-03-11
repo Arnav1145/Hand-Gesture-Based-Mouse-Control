@@ -7,6 +7,7 @@ import numpy as np
 import time
 import autopy
 import pyautogui
+import mouse_and_drawing as md
 
 
 # Create the Customtkinter app instance
@@ -14,11 +15,48 @@ app = ctk.CTk()
 app.bind('<Escape>', lambda e: app.quit())
 
 
+cap = cv2.VideoCapture(0)
+
+width, height =  640, 480
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+
+
+label_widget = tk.Label(app)
+label_widget.pack()
+
 # Set the title of the window
 app.title("Hand Gesture Based Mouse Control")
 
 # Set the size of the window
 app.geometry("1000x500")
+
+def button_click():
+    # Capture the video frame by frame
+    _, frame = cap.read()
+
+    frame = md.open_camera(frame)
+
+    # Convert image from one color space to other
+    opencv_image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
+
+    # Capture the latest frame and transform to image
+    captured_image = Image.fromarray(opencv_image)
+
+    # Convert captured image to photoimage
+    photo_image = ImageTk.PhotoImage(image=captured_image)
+
+    # Displaying photoimage in the label
+    label_widget.photo_image = photo_image
+
+    # Configure image in the label
+    label_widget.configure(image=photo_image)
+
+    # Repeat the same process after every 10 seconds
+    label_widget.after(10, button_click)
+
+
+
 
 # Create the container frame
 container = tk.Frame(app)
@@ -128,6 +166,9 @@ aboutUs_button.bind("<Leave>",lambda e: on_leave(aboutUs_button))
 # Create a label with the header text and pack it into the header frame
 header_label = tk.Label(right_frame, text="Hand Gesture Based Mouse Control", font=("TkDefaultFont", 16), bg="#2D4059", fg="white")
 header_label.pack(fill="x", padx=0, pady=0,ipady=5)
+
+button1 = tk.Button(app, text="Open Camera",command=button_click)
+button1.pack()
 
 # Hide the home page on startup
 home_page.pack_forget()

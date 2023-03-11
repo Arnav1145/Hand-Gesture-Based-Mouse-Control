@@ -12,7 +12,6 @@ coff = np.polyfit(x, y, 2)
 
 def distance(img):
     hands= detector.findHands(img, draw=False)
-    print(hands)
 
     if hands:
         handlmlist = hands[0]['lmList']
