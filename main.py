@@ -177,5 +177,7 @@ home_page.pack_forget()
 header_label.pack(fill="x", padx=0, pady=0, ipady=5)
 
 
+
+
 # Start the mainloop to display the GUI
 app.mainloop()
