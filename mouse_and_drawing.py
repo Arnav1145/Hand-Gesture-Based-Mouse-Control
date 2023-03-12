@@ -23,9 +23,9 @@ plocX=0
 plocY=0
 clocX,clocY=0,0
 
-cap=cv2.VideoCapture(1)
-cap.set(3,wCam)
-cap.set(4,hCam)
+# cap=cv2.VideoCapture(1)
+# cap.set(3,wCam)
+# cap.set(4,hCam)
 detector=htm.handDetector(maxHands=1)
 wScr,hScr =autopy.screen.size()
 
@@ -43,7 +43,7 @@ erasethickness=100
 
 imagcanvas=np.zeros((480,640,3),np.uint8)
 
-folderpath="D:\Machine Learning\drawing_photos\croped image"
+folderpath="Colors"
 mylist=os.listdir(folderpath)
 overlayList=[]
 for imPath in mylist:
@@ -56,43 +56,11 @@ detector=htm.handDetector(detectionCon=0.85)
 
 
 ##########################################################
-def leftclick(img):
-    length, img, lineInfo = detector.findDistance(8, 12, img)
-    if length < 45:
-        buttonpressd = True
-        pyautogui.click(button='left')
 
-def rightclick(img):
-    length, img, lineInfo = detector.findDistance(8, 20, img)
-    if length < 100:
-        pyautogui.click(button='right')
 
-def scroll(img):
-    length, img, lineInfo = detector.findDistance(4, 8, img)
-    if length < 115:
-        speedup = length
-        speedup = int(speedup)
-        speedup = speedup * 5
-        pyautogui.scroll(speedup)
-    if length > 120:
-        speeddown = length
-        speeddown = int(speeddown)
-        speeddown = speeddown * 2
-        pyautogui.scroll(-speeddown)
-
-def screenshort(img):
-    lengthscroll1, img, lineInfo1 = detector.findDistance(8, 12, img)
-    lengthscroll2, img, lineInfo2 = detector.findDistance(12, 16, img)
-
-    if lengthscroll1 < 70 and lengthscroll2 < 70:
-        cv2.circle(img, (lineInfo1[4], lineInfo1[5]), 5, (0, 255, 0), cv2.FILLED)
-        cv2.circle(img, (lineInfo2[4], lineInfo2[5]), 5, (0, 255, 0), cv2.FILLED)
-        ss = pyautogui.screenshot()
-        ss.save(r"D:\Machine Learning\Object detection\virtual mouse control\screenshort.png")
-
-while True:
-    success,img=cap.read()
-    new_img=img
+def open_camera(img):
+    global flag,count,drawcolor,drawing_flag,xp,yp,plocX,plocY
+    cv2.flip(img,1)
     distance = hd.distance(img)
     if distance>100:
         img=zs.zoomat(img)
@@ -159,37 +127,54 @@ while True:
                 plocX, plocY = clocX, clocY
 
             if fingers[1] == 1 and fingers[2] == 1 and fingers[0] == 0 and fingers[3] == 0 and fingers[4] == 0:
-                leftclick(img)
+                length, img, lineInfo = detector.findDistance(8, 12, img)
+                if length < 45:
+                    buttonpressd = True
+                    pyautogui.click(button='left')
 
             if fingers[0] == 0 and fingers[1] == 1 and fingers[2] == 0 and fingers[3] == 0 and fingers[4] == 1:
-                rightclick(img)
+                length, img, lineInfo = detector.findDistance(8, 20, img)
+                if length < 100:
+                    pyautogui.click(button='right')
 
             if fingers[0] == 1 and fingers[1] == 1 and fingers[2] == 0 and fingers[3] == 0 and fingers[4] == 0:
-                scroll(img)
+                length, img, lineInfo = detector.findDistance(4, 8, img)
+                if length < 115:
+                    speedup = length
+                    speedup = int(speedup)
+                    speedup = speedup * 5
+                    pyautogui.scroll(speedup)
+                if length > 120:
+                    speeddown = length
+                    speeddown = int(speeddown)
+                    speeddown = speeddown * 2
+                    pyautogui.scroll(-speeddown)
 
             if fingers[1] == 1 and fingers[2] == 1 and fingers[3] == 1 and fingers[0] == 0 and fingers[4] == 0:
-                screenshort(img)
+                lengthscroll1, img, lineInfo1 = detector.findDistance(8, 12, img)
+                lengthscroll2, img, lineInfo2 = detector.findDistance(12, 16, img)
+
+                if lengthscroll1 < 70 and lengthscroll2 < 70:
+                    cv2.circle(img, (lineInfo1[4], lineInfo1[5]), 5, (0, 255, 0), cv2.FILLED)
+                    cv2.circle(img, (lineInfo2[4], lineInfo2[5]), 5, (0, 255, 0), cv2.FILLED)
+                    ss = pyautogui.screenshot()
+                    ss.save(r"screenshots\screenshort.png")
 
 
-    if flag==1:
-        cv2.flip(img,1)
-        imggray = cv2.cvtColor(imagcanvas, cv2.COLOR_BGR2GRAY)
-        _, imgInv = cv2.threshold(imggray, 50, 255, cv2.THRESH_BINARY_INV)
-        imgInv = cv2.cvtColor(imgInv, cv2.COLOR_GRAY2BGR)
-        # img=cv.bitwise_and(img,imgInv)
-        img = cv2.bitwise_or(img, imagcanvas)
+        if flag==1:
+            cv2.flip(img,1)
+            imggray = cv2.cvtColor(imagcanvas, cv2.COLOR_BGR2GRAY)
+            _, imgInv = cv2.threshold(imggray, 50, 255, cv2.THRESH_BINARY_INV)
+            imgInv = cv2.cvtColor(imgInv, cv2.COLOR_GRAY2BGR)
+            # img=cv.bitwise_and(img,imgInv)
+            img = cv2.bitwise_or(img, imagcanvas)
 
-        img[:50, :106] = overlayList[0]
-        img[:50, 106:212] = overlayList[1]
-        img[:50, 212:318] = overlayList[2]
-        img[:50, 318:424] = overlayList[3]
-        img[:50, 424:530] = overlayList[4]
-        img[:50, 530:636] = overlayList[5]
-        img = cv2.addWeighted(img, 1, imagcanvas, 1, 0)
-    img = cv2.flip(img, 1)
-    cv2.imshow("images",img)
-    key=cv2.waitKey(30)
-    if key==27:
-        cap.release()
-        cv2.destroyAllWindows()
-        break
+            img[:50, :106] = overlayList[0]
+            img[:50, 106:212] = overlayList[1]
+            img[:50, 212:318] = overlayList[2]
+            img[:50, 318:424] = overlayList[3]
+            img[:50, 424:530] = overlayList[4]
+            img[:50, 530:636] = overlayList[5]
+            img = cv2.addWeighted(img, 1, imagcanvas, 1, 0)
+        img = cv2.flip(img, 1)
+    return img
