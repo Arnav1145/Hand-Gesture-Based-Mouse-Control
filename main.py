@@ -15,7 +15,7 @@ app = ctk.CTk()
 app.bind('<Escape>', lambda e: app.quit())
 
 
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(1)
 
 width, height =  640, 480
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
@@ -175,6 +175,8 @@ home_page.pack_forget()
 
 # Show the header page on startup
 header_label.pack(fill="x", padx=0, pady=0, ipady=5)
+
+
 
 
 # Start the mainloop to display the GUI
