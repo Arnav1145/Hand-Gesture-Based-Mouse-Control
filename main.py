@@ -15,7 +15,7 @@ app = ctk.CTk()
 app.bind('<Escape>', lambda e: app.quit())
 
 
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(1)
 
 width, height =  640, 480
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)

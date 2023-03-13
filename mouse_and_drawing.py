@@ -60,7 +60,7 @@ detector=htm.handDetector(detectionCon=0.85)
 
 def open_camera(img):
     global flag,count,drawcolor,drawing_flag,xp,yp,plocX,plocY
-    cv2.flip(img,1)
+    #cv2.flip(img,1)
     distance = hd.distance(img)
     if distance>100:
         img=zs.zoomat(img)
@@ -86,17 +86,18 @@ def open_camera(img):
                 xp, yp = 0, 0
                 if y1 < 65:
                     if x1 < 106:
-                        drawcolor = (255, 255, 255)
-                    elif 107 < x1 < 212:
-                        drawcolor = (0, 0, 255)
-                    elif 213 < x1 < 318:
-                        drawcolor = (255, 0, 0)
-                    elif 319 < x1 < 424:
-                        drawcolor = (0, 255, 0)
-                    elif 425 < x1 < 530:
-                        drawcolor = (0, 255, 255)
-                    elif x1 > 531:
                         drawcolor = (0, 0, 0)
+                    elif 107 < x1 < 212:
+                        drawcolor = (0, 255, 255)
+                    elif 213 < x1 < 318:
+                        drawcolor = (0, 255, 0)
+                    elif 319 < x1 < 424:
+                        drawcolor = (255, 0, 0)
+                    elif 425 < x1 < 530:
+                        drawcolor = (0, 0, 255)
+                    elif x1 > 531:
+                        drawcolor = (255, 255, 255)
+
                 cv2.rectangle(img, (x1, y1 - 25), (x2, y2 + 25), drawcolor, cv2.FILLED)
 
             if drawing_flag==1:
@@ -162,7 +163,7 @@ def open_camera(img):
 
 
         if flag==1:
-            cv2.flip(img,1)
+            #cv2.flip(img,1)
             imggray = cv2.cvtColor(imagcanvas, cv2.COLOR_BGR2GRAY)
             _, imgInv = cv2.threshold(imggray, 50, 255, cv2.THRESH_BINARY_INV)
             imgInv = cv2.cvtColor(imgInv, cv2.COLOR_GRAY2BGR)
