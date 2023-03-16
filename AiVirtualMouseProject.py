@@ -95,7 +95,7 @@ while True:
                 speeddown = speeddown * 2
                 pyautogui.scroll(-speeddown)
 
-        # tack screenshort
+        # tack screenshots
         if fingers[1] == 1 and fingers[2] == 1 and fingers[3] == 1 and fingers[0] == 0 and fingers[4] == 0:
             lengthscroll1, img, lineInfo1 = detector.findDistance(8, 12, img)
             lengthscroll2, img, lineInfo2 = detector.findDistance(12, 16, img)

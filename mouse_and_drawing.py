@@ -7,7 +7,7 @@ import pyautogui
 import HandDistance as hd
 import ZoomCamera as zs
 import os
-
+from datetime import datetime
 #####################################################
          #mouse variable
 wCam,hCam=640,480
@@ -116,20 +116,20 @@ def open_camera(img):
 
         if count%2==0:
             flag=0
-            if fingers[1] == 1 and fingers[2] == 0 and fingers[0] == 0 and fingers[3] == 0 and fingers[4] == 0:
-                x3 = np.interp(x1, (frameR, wCam - frameR), (0, wScr))
-                y3 = np.interp(y1, (frameR, hCam - frameR), (0, hScr))
+            if fingers[0] == 1 and fingers[1] == 1 and fingers[2] == 0 and fingers[3] == 0 and fingers[4] == 0:
+                length, img, lineInfo = detector.findDistance(4, 8, img)
+                if length >83:
+                    x3 = np.interp(x1, (frameR, wCam - frameR), (0, wScr))
+                    y3 = np.interp(y1, (frameR, hCam - frameR), (0, hScr))
 
-                clocX = plocX + (x3 - plocX) / smoothening
-                clocY = plocY + (y3 - plocY) / smoothening
+                    clocX = plocX + (x3 - plocX) / smoothening
+                    clocY = plocY + (y3 - plocY) / smoothening
 
-                autopy.mouse.move(wScr - clocX, clocY)
-                cv2.circle(img, (x1, y1), 10, (255, 0, 255), cv2.FILLED)
-                plocX, plocY = clocX, clocY
+                    autopy.mouse.move(wScr - clocX, clocY)
+                    cv2.circle(img, (x1, y1), 10, (255, 0, 255), cv2.FILLED)
+                    plocX, plocY = clocX, clocY
 
-            if fingers[1] == 1 and fingers[2] == 1 and fingers[0] == 0 and fingers[3] == 0 and fingers[4] == 0:
-                length, img, lineInfo = detector.findDistance(8, 12, img)
-                if length < 45:
+                if length < 80:
                     buttonpressd = True
                     pyautogui.click(button='left')
 
@@ -138,7 +138,7 @@ def open_camera(img):
                 if length < 100:
                     pyautogui.click(button='right')
 
-            if fingers[0] == 1 and fingers[1] == 1 and fingers[2] == 0 and fingers[3] == 0 and fingers[4] == 0:
+            if fingers[0] == 1 and fingers[1] == 1 and fingers[2] == 1 and fingers[3] == 0 and fingers[4] == 0:
                 length, img, lineInfo = detector.findDistance(4, 8, img)
                 if length < 115:
                     speedup = length
@@ -151,7 +151,7 @@ def open_camera(img):
                     speeddown = speeddown * 2
                     pyautogui.scroll(-speeddown)
 
-            if fingers[1] == 1 and fingers[2] == 1 and fingers[3] == 1 and fingers[0] == 0 and fingers[4] == 0:
+            if fingers[0] == 0 and fingers[1] == 1 and fingers[2] == 1 and fingers[3] == 1 and fingers[4] == 0:
                 lengthscroll1, img, lineInfo1 = detector.findDistance(8, 12, img)
                 lengthscroll2, img, lineInfo2 = detector.findDistance(12, 16, img)
 
@@ -159,7 +159,12 @@ def open_camera(img):
                     cv2.circle(img, (lineInfo1[4], lineInfo1[5]), 5, (0, 255, 0), cv2.FILLED)
                     cv2.circle(img, (lineInfo2[4], lineInfo2[5]), 5, (0, 255, 0), cv2.FILLED)
                     ss = pyautogui.screenshot()
-                    ss.save(r"screenshots\screenshort.png")
+                    dates=datetime.now()
+                    datesname=str(dates)
+                    names="screenshots\\"+datesname+".png"
+                    time.sleep(1)
+                    ss.save(names)
+
 
 
         if flag==1:
