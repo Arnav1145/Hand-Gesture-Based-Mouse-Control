@@ -133,7 +133,7 @@ def open_camera(img):
                     buttonpressd = True
                     pyautogui.click(button='left')
 
-            if fingers[0] == 0 and fingers[1] == 1 and fingers[2] == 0 and fingers[3] == 0 and fingers[4] == 1:
+            if fingers[0] == 1 and fingers[1] == 1 and fingers[2] == 0 and fingers[3] == 0 and fingers[4] == 1:
                 length, img, lineInfo = detector.findDistance(8, 20, img)
                 if length < 100:
                     pyautogui.click(button='right')
