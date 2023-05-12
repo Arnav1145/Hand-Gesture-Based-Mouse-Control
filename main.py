@@ -1,12 +1,9 @@
 # Import the necessary modules
 import tkinter as tk
+import webbrowser
 import customtkinter as ctk
 import cv2
 from PIL import Image, ImageTk
-import numpy as np
-import time
-import autopy
-import pyautogui
 import mouse_and_drawing as md
 
 
@@ -14,8 +11,7 @@ import mouse_and_drawing as md
 app = ctk.CTk()
 app.bind('<Escape>', lambda e: app.quit())
 
-
-cap = cv2.VideoCapture(1)
+cap = cv2.VideoCapture(0)
 
 width, height =  640, 480
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
@@ -26,7 +22,7 @@ label_widget = tk.Label(app)
 label_widget.pack()
 
 # Set the title of the window
-app.title("Hand Gesture Based Mouse Control")
+app.title("WaveClick")
 
 # Set the size of the window
 app.geometry("1000x500")
@@ -52,10 +48,11 @@ def button_click():
     # Configure image in the label
     label_widget.configure(image=photo_image)
 
+    # Maximize the application window
+    # label_widget.master.wm_state('zoomed')
+
     # Repeat the same process after every 10 seconds
     label_widget.after(10, button_click)
-
-
 
 
 # Create the container frame
@@ -71,46 +68,114 @@ right_frame = tk.Frame(container, bg="#2D4059", padx=10, pady=10)
 right_frame.pack(side="left", fill="both", expand=True)
 
 
-################################################################
-# Create the home page frame
-home_page = tk.Frame(right_frame, bg="#2D4059")
-home_page.pack(fill="both", expand=True)
-
-# Load the background image for the home page
-background_image = Image.open("assets/homePageImage.jpg")
-resized_image = background_image.resize((home_page.winfo_width(), home_page.winfo_height()), Image.Resampling.LANCZOS)
-background_image = ImageTk.PhotoImage(resized_image)
-
-
-# Create a label with the background image and pack it into the home page frame
-background_label = tk.Label(home_page, image=background_image)
-background_label.place(x=0, y=0, relwidth=1, relheight=1)
-
-# Create a label for the welcome message and place it on top of the background label
-welcome_label = tk.Label(background_label, text="Welcome to the future!!!", font=("Arial", 24, "bold"), fg="white",highlightthickness=0, padx=20, pady=20)
-welcome_label.place(relx=0.5, rely=0, anchor="n")
-
-# Update the home page size when it changes
-def update_home_page_size(event):
-   # Update the size of the background image when the home page frame size changes
-    global background_image
-    background_image = Image.open("assets/homePageImage.jpg")
-    background_image = background_image.resize((home_page.winfo_width(), home_page.winfo_height()), Image.Resampling.LANCZOS)
-    background_image = ImageTk.PhotoImage(background_image)
-    background_label.configure(image=background_image)
-
-# Bind the update_home_page_size function to the home page frame's <Configure> event
-home_page.bind("<Configure>", update_home_page_size)
-################################################################
 
 # Define a function to show the home page and hide other pages
 def show_home_page():
-    home_page.pack(fill="both", expand=True)
-    # Hide other pages if they are visible
-    if setting_page.winfo_ismapped():
-        setting_page.pack_forget()
-    if aboutUs_page.winfo_ismapped():
-        aboutUs_page.pack_forget()
+    # Clear the current contents of the right frame
+    for widget in right_frame.winfo_children():
+        widget.destroy()
+     # Create a label widget for the heading
+    heading_label = tk.Label(right_frame, text="Welcome to Waveclick", font=("TkDefaultFont", 18), fg="white", bg="#2D4059", padx=10, pady=10)
+    heading_label.pack(side="top", fill="x", padx=10, pady=10, anchor="n")
+    heading_label.config(bg="#1E2A3A")
+
+  # Add two paragraphs to the right frame using a Text widget
+    text = tk.Text(right_frame, font=("Arial", 12), bg="#2D4059", fg="white", wrap="word", highlightthickness=0, borderwidth=0)
+    text.insert(tk.END, "Say goodbye to clunky mouse devices and embrace a more natural and precise way of interacting with your computer. With just a wave of your hand, you can move the cursor, click, scroll, and perform a range of other actions with ease.\n\nOur cutting-edge technology tracks your hand movements with precision and accuracy, making it the perfect solution for gamers, graphic designers, and anyone looking for a more comprehensive and exciting way to interact with their computer.\n\nExperience a new level of control and freedom with Hand Gesture Based Mouse control.")
+    text.configure(state="disabled")
+    text.pack(side="top", pady=10)
+
+#############################
+#Tutorial Page Code
+def show_guide_page():
+    # Clear the current contents of the right frame
+    for widget in right_frame.winfo_children():
+        widget.destroy()
+
+    # Load the image
+    image = Image.open("assets/Tutorial.png")
+    # Resize the image to fit the right frame
+    image = image.resize((right_frame.winfo_width(), right_frame.winfo_height()), Image.Resampling.LANCZOS)
+    # Convert the image to Tkinter-compatible format
+    image_tk = ImageTk.PhotoImage(image)
+
+    # Create a label widget for the image
+    image_label = tk.Label(right_frame, image=image_tk, bg="#2D4059")
+    image_label.pack(side="top", fill="both", expand=True)
+
+    # Keep a reference to the image_tk object to prevent it from being garbage collected
+    image_label.image_tk = image_tk
+
+###############################################
+#About us page Code
+def show_aboutUs_page():
+    # Clear the current contents of the right frame
+    for widget in right_frame.winfo_children():
+        widget.destroy()
+
+    # Create a label widget for the heading
+    heading_label = tk.Label(right_frame, text="Meet Our Team", font=("TkDefaultFont", 18), fg="white", bg="#2D4059", padx=10, pady=10)
+    heading_label.pack(side="top", fill="x", padx=10, pady=10, anchor="n")
+    heading_label.config(bg="#1E2A3A")
+
+    # Create a frame for the team members
+    team_frame = tk.Frame(right_frame, bg="#2D4059", padx=10, pady=10)
+    team_frame.pack(side="top", fill="both", expand=True)
+
+    # Create a list of team members with their name, photo and icons
+    team_members = [
+    {"name": "Arnav Modanwal", "photo": "assets/Arnav.jpg", "icons": ["assets/gmail.png", "assets/linkedin.png", "assets/github.png"],
+     "links": ["mailto:200390107011@saffrony.ac.in", "https://www.linkedin.com/in/arnav-modanwal-b4b111188", "https://github.com/Arnav1145"]},
+    {"name": "Hepil Italiya", "photo": "assets/Hepil.jpg", "icons": ["assets/gmail.png", "assets/linkedin.png", "assets/github.png"],
+     "links": ["mailto:200390107049@saffrony.ac.in", "https://www.linkedin.com/in/hepil-italiya", "https://github.com/hepil-italiya"]},
+    {"name": "Pratik Solanki", "photo": "assets/Pratik.png", "icons": ["assets/gmail.png", "assets/linkedin.png", "assets/github.png"],
+     "links": ["mailto:200390107045@saffrony.ac.in", "http://www.linkedin.com/in/pratiksolanki", "https://github.com/Pratik960"]},
+    {"name": "Krushi Monpara", "photo": "assets/Krushi.jpg", "icons": ["assets/gmail.png", "assets/linkedin.png", "assets/github.png"],
+     "links": ["mailto:200390107037@saffrony.ac.in", "https://www.linkedin.com/in/krushi-monpara-k24112002", "https://github.com/Krushi24112002"]},
+]
+
+    # Create a label widget for each team member
+    member_labels = []
+    for i, member in enumerate(team_members):
+        # Load the member's photo
+        photo = Image.open(member["photo"])
+        # Resize the photo to the desired size
+        photo = photo.resize((150, 150), Image.Resampling.LANCZOS)
+        # Convert the photo to Tkinter-compatible format
+        photo_tk = ImageTk.PhotoImage(photo)
+
+        # Create a frame for the member's photo and name
+        member_frame = tk.Frame(team_frame, bg="#2D4059")
+        member_frame.grid(row=i//2, column=i%2, padx=10, pady=10)
+
+        # Create a label widget for the member's photo
+        photo_label = tk.Label(member_frame, image=photo_tk, bg="#2D4059")
+        photo_label.photo = photo_tk  # Save the PhotoImage as an instance variable of the label
+        photo_label.pack(side="left", padx=10, pady=10)
+
+        # Create a frame for the member's name and icons
+        name_icons_frame = tk.Frame(member_frame, bg="#2D4059")
+        name_icons_frame.pack(side="left", padx=10, pady=10)
+
+        # Create a label widget for the member's name
+        name_label = tk.Label(name_icons_frame, text=member["name"], font=("TkDefaultFont", 14), fg="white", bg="#2D4059")
+        name_label.pack(side="top", padx=10, pady=5)
+
+        # Create a frame for the member's icons
+        icons_frame = tk.Frame(name_icons_frame, bg="#2D4059")
+        icons_frame.pack(side="top", padx=10, pady=5)
+
+        # Create a label widget for each icon
+        for i, icon in enumerate(member["icons"]):
+            icon_photo = Image.open(icon)
+            icon_photo = icon_photo.resize((30, 30), Image.Resampling.LANCZOS)
+            icon_tk = ImageTk.PhotoImage(icon_photo)
+            icon_label = tk.Label(icons_frame, image=icon_tk, bg="#2D4059")
+            icon_label.photo = icon_tk
+            icon_label.pack(side="left", padx=5, pady=5)
+            link = member["links"][i]
+            icon_label.bind("<Button-1>", lambda e, link=link: webbrowser.open_new_tab(link))
+
 
 
 # Define a function to change the background color of the home button on mouse enter
@@ -136,25 +201,25 @@ home_button.pack(side="top", padx=50, pady=50, anchor="w")
 home_button.bind("<Enter>", lambda e: on_enter(home_button))
 home_button.bind("<Leave>", lambda e: on_leave(home_button))
 
-# Load the setting icon image
-setting_icon = Image.open("assets\Setting.png")
-setting_icon = setting_icon.resize((30, 30), Image.Resampling.LANCZOS)
-setting_icon = ImageTk.PhotoImage(setting_icon)
+# Load the guide icon image
+guide_icon = Image.open("assets\Setting.png")
+guide_icon = guide_icon.resize((30, 30), Image.Resampling.LANCZOS)
+guide_icon = ImageTk.PhotoImage(guide_icon)
 
 
-# Create the setting button with the home icon image
-setting_button = tk.Button(left_frame, image=setting_icon,text=" Setting",compound="left",font=("TkDefaultFont", 16), bg="#222831",fg="white", bd=0, padx=0, pady=0)
-setting_button.pack(side="top", padx=50, pady=50, anchor="w")
-setting_button.bind("<Enter>",lambda e: on_enter(setting_button))
-setting_button.bind("<Leave>",lambda e: on_leave(setting_button))
+# Create the guide button with the guide icon image
+guide_button = tk.Button(left_frame, image=guide_icon,text=" Tutorial",compound="left",font=("TkDefaultFont", 16), bg="#222831",fg="white", bd=0, padx=0, pady=0, command=show_guide_page)
+guide_button.pack(side="top", padx=50, pady=50, anchor="w")
+guide_button.bind("<Enter>",lambda e: on_enter(guide_button))
+guide_button.bind("<Leave>",lambda e: on_leave(guide_button))
 
 # Load the about us icon image
 aboutUs_icon = Image.open("assets\AboutUs.png")
 aboutUs_icon = aboutUs_icon.resize((30, 30), Image.Resampling.LANCZOS)
 aboutUs_icon = ImageTk.PhotoImage(aboutUs_icon)
 
-# Create the setting button with the home icon image
-aboutUs_button = tk.Button(left_frame, image=aboutUs_icon,text=" About Us",compound="left",font=("TkDefaultFont", 16), bg="#222831",fg="white", bd=0, padx=0, pady=0)
+# Create the about button with the aboutUs icon image
+aboutUs_button = tk.Button(left_frame, image=aboutUs_icon,text=" About Us",compound="left",font=("TkDefaultFont", 16), bg="#222831",fg="white", bd=0, padx=0, pady=0,command=show_aboutUs_page)
 aboutUs_button.pack(side="top", padx=50, pady=50, anchor="w")
 aboutUs_button.bind("<Enter>",lambda e: on_enter(aboutUs_button))
 aboutUs_button.bind("<Leave>",lambda e: on_leave(aboutUs_button))
@@ -164,14 +229,12 @@ aboutUs_button.bind("<Leave>",lambda e: on_leave(aboutUs_button))
 
 
 # Create a label with the header text and pack it into the header frame
-header_label = tk.Label(right_frame, text="Hand Gesture Based Mouse Control", font=("TkDefaultFont", 16), bg="#2D4059", fg="white")
+header_label = tk.Label(right_frame, text="WaveClick", font=("TkDefaultFont", 16), bg="#2D4059", fg="white")
 header_label.pack(fill="x", padx=0, pady=0,ipady=5)
 
-button1 = tk.Button(app, text="Open Camera",command=button_click)
+button1 = tk.Button(left_frame, text="Open Camera",command=button_click)
 button1.pack()
 
-# Hide the home page on startup
-home_page.pack_forget()
 
 # Show the header page on startup
 header_label.pack(fill="x", padx=0, pady=0, ipady=5)
